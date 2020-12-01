@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import MainPageLayout from '../components/MainPageLayout';
 import { apiGET } from '../misc/config';
 import ShowGrid from '../components/show/ShowGrid'
-import ShowCard from '../components/show/ShowCard'
 import ActorGrid from '../components/actor/ActorGrid'
-import ActorCard from '../components/actor/ActorCard'
+
 
 
 
