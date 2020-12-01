@@ -1,61 +1,94 @@
-import React,{useState} from 'react';
+import React, { useState } from 'react';
 import MainPageLayout from '../components/MainPageLayout';
-import {apiGET} from '../misc/config'
+import { apiGET } from '../misc/config';
 
-const Home = () =>{
-    const [input,setInput]=useState('');
-    const [results, setResults] = useState(null);
+const Home = () => {
+  const [input, setInput] = useState('');
+  const [results, setResults] = useState(null);
+  const [searchOption, setSearchOption] = useState('shows');
 
+  const isShowSearch = searchOption === 'shows';
 
-    const onInputChange = (ev) =>{
-         setInput(ev.target.value);
+  const onInputChange = ev => {
+    setInput(ev.target.value);
+  };
+
+  const onSearch = () => {
+    // https://api.tvmaze.com/search/shows?q=girls
+
+    apiGET(`/search/${searchOption}?q=${input}`).then(result => {
+      setResults(result);
+    });
+  };
+
+  const onKeyDown = ev => {
+    if (ev.keyCode === 13) {
+      onSearch();
+    }
+  };
+
+  const renderResults = () => {
+    if (results && results.length === 0) {
+      return <div>No results</div>;
     }
 
-    const onSearch =() =>{
-        // https://api.tvmaze.com/search/shows?q=girls
-        
-         apiGET(`/search/shows?q=${input}`).then(result =>{
-               setResults(result)
-           })
-
+    if (results && results.length > 0) {
+      return results[0].show
+        ? results.map(item => <div key={item.show.id}>{item.show.name}</div>)
+        : results.map(item => (
+            <div key={item.person.id}>{item.person.name}</div>
+          ));
     }
 
-    const onKeyDown = (ev) =>{
-               if(ev.keyCode === 13)
-                 {
-                     onSearch()
-                 }
-                
-    }
+    return null;
+  };
 
-const renderResults = () => {
-        if (results && results.length === 0) {
-          return <div>No results</div>;
-        }
-    
-        if (results && results.length > 0) {
-          return (
-            <div>
-              {results.map(item => (
-                <div key={item.show.id}>{item.show.name}</div>
-              ))}
-            </div>
-          );
-        }
-    
-        return null;
-      };
+  const onRadioChange = ev => {
+    setSearchOption(ev.target.value);
+  };
 
-    return (
+  console.log(searchOption);
+
+  return (
+    <div>
+      <MainPageLayout>
+        <input
+          type="text"
+          placeholder="Search for something!"
+          onChange={onInputChange}
+          val={input}
+          onKeyDown={onKeyDown}
+        />
+
         <div>
-           <MainPageLayout> 
-              
-             <input type="text" onChange={onInputChange} val={input}  onKeyDown={onKeyDown}/>
-             <button type="button" onClick={onSearch}>Search</button>
-             {renderResults()}
-           </MainPageLayout>
+          <label htmlFor="show-search">
+            shows
+            <input
+              id="show-search"
+              type="radio"
+              value="shows"
+              checked={isShowSearch}
+              onChange={onRadioChange}
+            />
+          </label>
+          <label htmlFor="Actor-search">
+            Actors
+            <input
+              id="Actor-search"
+              type="radio"
+              value="people"
+              checked={!isShowSearch}
+              onChange={onRadioChange}
+            />
+          </label>
         </div>
-    )
-}
+        <button type="button" onClick={onSearch}>
+          Search
+        </button>
+        {renderResults()}
+      </MainPageLayout>
+    </div>
+  );
+};
 
-export default Home
+export default Home;
