@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect} from 'react';
 import MainPageLayout from '../components/MainPageLayout';
-import { apiGET } from '../misc/config';
+import { apiGet } from '../misc/config';
 import ShowGrid from '../components/show/ShowGrid'
 import ActorGrid from '../components/actor/ActorGrid'
 
@@ -15,6 +15,7 @@ const Home = () => {
 
   const isShowSearch = searchOption === 'shows';
 
+
   const onInputChange = ev => {
     setInput(ev.target.value);
   };
@@ -22,7 +23,7 @@ const Home = () => {
   const onSearch = () => {
     // https://api.tvmaze.com/search/shows?q=girls
 
-    apiGET(`/search/${searchOption}?q=${input}`).then(result => {
+    apiGet(`/search/${searchOption}?q=${input}`).then(result => {
       setResults(result);
     });
   };
