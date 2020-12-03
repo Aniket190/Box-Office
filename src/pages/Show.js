@@ -35,6 +35,7 @@ const Show = () => {
     reducer,
     initialState
   );
+  
 
   useEffect(() => {
     let isMounted = true;
